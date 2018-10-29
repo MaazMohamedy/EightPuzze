@@ -1,1 +1,1 @@
-# EightPuzze_AI
+# Eight Puzze

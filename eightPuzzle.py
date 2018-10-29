@@ -10,7 +10,7 @@ def main():
 	if puzzleType == '2':
 		pickCustomArrangement()
 
-		
+
 		
 def pickCustomArrangement():
 	puzzle = []
@@ -42,31 +42,31 @@ def pickDefaultArrangement():
 		return trivial;
 	#Very Easy
 	if level == '2':
-		trivial = [[1,2,3],
+		veryEasy = [[1,2,3],
 		[4,5,6],
 		[7,0,8]]
 		return trivial;
 	#Easy
 	if level == '3':
-		trivial = [[1,2,0],
+		easy = [[1,2,0],
 		[4,5,3],
 		[7,8,6]]
 		return trivial;
 	#doable
 	if level == '4':
-		trivial = [[0,1,2],
+		doable = [[0,1,2],
 		[4,5,3],
 		[7,8,6]]
 		return trivial;
 	#Oh Boyy
 	if level == '5':
-		trivial = [[8,7,1],
+		ohBoy = [[8,7,1],
 		[6,0,2],
 		[5,4,3]]
 		return trivial;
 	#IMPOSSIBLE
 	if level == '6':
-		trivial = [[1,2,3],
+		impossible = [[1,2,3],
 		[4,5,6],
 		[8,7,0]]
 		return trivial;

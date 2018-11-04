@@ -2,8 +2,6 @@ import heapq
 # from copy import copy, deepcopy
 
 def main():
-	
-
 	puzzleType = input("Welcome to Maaz Mohamedy's 8-puzzle solver.\nType '1' to use default puzzle," +
 		" or '2' to create your own. \n")
 
@@ -21,7 +19,6 @@ def main():
 		"\n\t3. A* with the Manhattan distance heuristic.\n")
 
 	generalSearch(puzzle,algo)
-
 
 def misplacedTileHeuristic(puzzle):
 

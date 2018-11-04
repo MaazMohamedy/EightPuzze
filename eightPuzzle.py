@@ -1,5 +1,4 @@
 import heapq
-# from copy import copy, deepcopy
 
 def main():
 	puzzleType = input("Welcome to Maaz Mohamedy's 8-puzzle solver.\nType '1' to use default puzzle," +
@@ -11,7 +10,7 @@ def main():
 	if puzzleType == '2':
 		puzzle = pickCustomArrangement()
 
-	print(puzzle)
+	# print(puzzle)
 
 	algo = input("Enter your choice of algorithm"  +
 		"\n\t1. Uniform Cost Search"
@@ -21,7 +20,6 @@ def main():
 	generalSearch(puzzle,algo)
 
 def misplacedTileHeuristic(puzzle):
-
 	numMisplaced = 0;
 	val = 1
 	for i in range(0,len(puzzle)):
@@ -57,10 +55,8 @@ def findIndicesOfGoalState(val):
 
 def calculateHeuristic(algo, puzzle):
 	if algo == "1": return 0
-
 	if algo == "2":
 		return misplacedTileHeuristic(puzzle)
-
 	if algo == "3":
 		return manhattanDistanceHeuristic(puzzle)
 
@@ -86,11 +82,11 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftDown)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		print(shiftDown)
-		print("shift down")
-		print("H(n): " + str(hOfN))
-		print("G(n): " + str(gOfN))
-		children.append((updatedCost,shiftDown,gOfN))
+		# print(shiftDown)
+		# print("shift down")
+		# print("H(n): " + str(hOfN))
+		# print("G(n): " + str(gOfN))
+		children.append((updatedCost,shiftDown,gOfN,hOfN))
 
 	if y-1 >= 0:
 		# shift blank space left
@@ -100,11 +96,11 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftLeft)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		print("shift left")
-		print(shiftLeft)
-		print("H(n): " + str(hOfN))
-		print("G(n): " + str(gOfN))
-		children.append((updatedCost,shiftLeft,gOfN))
+		# print("shift left")
+		# print(shiftLeft)
+		# print("H(n): " + str(hOfN))
+		# print("G(n): " + str(gOfN))
+		children.append((updatedCost,shiftLeft,gOfN,hOfN))
 
 	if x-1 >= 0:
 		# shift blank space up
@@ -114,11 +110,11 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftUp)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		print("shift up")
-		print(shiftUp)
-		print("H(n): " + str(hOfN))
-		print("G(n): " + str(gOfN))
-		children.append((updatedCost,shiftUp,gOfN))
+		# print("shift up")
+		# print(shiftUp)
+		# print("H(n): " + str(hOfN))
+		# print("G(n): " + str(gOfN))
+		children.append((updatedCost,shiftUp,gOfN,hOfN))
 
 
 	if y+1 < (len(node[1])):
@@ -129,25 +125,33 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftRight)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		print("shift right")
-		print(shiftRight)
-		print("H(n): " + str(hOfN))
-		print("G(n): " + str(gOfN))
-		children.append((updatedCost,shiftRight, gOfN))
+		# print("shift right")
+		# print(shiftRight)
+		# print("H(n): " + str(hOfN))
+		# print("G(n): " + str(gOfN))
+		children.append((updatedCost,shiftRight,gOfN,hOfN))
 
 	return children
 
 def generalSearch(puzzle, algo):
-
 	#4^(d+1) - 5
-
 	goalState = [[1,2,3],[4,5,6],[7,8,0]]
 	failure = False;
 	maxQueueLen = 0;
-
 	nodes = []
 
-	heapq.heappush(nodes, (0, puzzle, 0) )
+	first = ''
+	for i in range(0,len(puzzle[0])):
+		if  puzzle[0][i] != 0:  first=first+' '+str(puzzle[0][i])
+		else: first=first+' '+'b'
+
+	print("Expanding state " + first, end =" ")
+	printExpansion(puzzle[1:], True, 0, 0)
+
+	first_expansion = True
+
+	#total cost, puzzle, depth, h(n)
+	heapq.heappush(nodes, (0, puzzle, 0,0) )
 
 	while(True):
 		if len(nodes) == 0: #if nodes is empty, return failure
@@ -157,14 +161,16 @@ def generalSearch(puzzle, algo):
 		if maxQueueLen < len(nodes): maxQueueLen = len(nodes)
 		currNode = heapq.heappop(nodes)
 
+		if not first_expansion:
+			printExpansion(currNode[1],False,currNode[3], currNode[2])
+
+		first_expansion = False
+
 		if currNode[1] == goalState:
-			print("DEPTH: ")
-			print(currNode[2])
-			# print("Nodes: ")
-			# print(nodes)
-			print("Max len nodes:")
-			print(maxQueueLen)
-			print("Max len nodes:")
+			print("Goal!!")
+			print()
+			print("The maximum number of nodes in the queue at any one time was " + str(maxQueueLen))
+			print("The depth of the goal node was " + str(currNode[2]))
 			return currNode;
 
 		children = expand(currNode, algo)
@@ -172,20 +178,24 @@ def generalSearch(puzzle, algo):
 		for child in children:
 			heapq.heappush(nodes, child)
 
-		print(nodes)
-
-		# x  = input("take a breath: ")
-
-	# printResults()
-
 	if failure:
 		print("FAILURE")
 
 	return
-		
 
-# def printResults():
-
+def printExpansion(puzzle,first,hOfN, gOfN):
+	print()
+	row = ''
+	if not first:
+		print('The best state to expand with a g(n) = ' + str(gOfN)+ ' and h(n) = ' + str(hOfN) + ' is...')
+	for i in range(0,len(puzzle)):
+		for j in range(0,len(puzzle[i])):
+			if  puzzle[i][j] != 0:  row = row + ' '+ str(puzzle[i][j])
+			else: row=row+' '+'b'
+		row = '\t\t' + row
+		if first == False and i == 2: row = row + ' Expanding this node...'
+		print(row)
+		row = ''
 
 def pickCustomArrangement():
 	puzzle = []
@@ -245,8 +255,6 @@ def pickDefaultArrangement():
 		[4,5,6],
 		[8,7,0]]
 		return impossible;
-
-
 
 if __name__ == "__main__":
 	main()

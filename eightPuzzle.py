@@ -82,10 +82,6 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftDown)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		# print(shiftDown)
-		# print("shift down")
-		# print("H(n): " + str(hOfN))
-		# print("G(n): " + str(gOfN))
 		children.append((updatedCost,shiftDown,gOfN,hOfN))
 
 	if y-1 >= 0:
@@ -96,10 +92,6 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftLeft)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		# print("shift left")
-		# print(shiftLeft)
-		# print("H(n): " + str(hOfN))
-		# print("G(n): " + str(gOfN))
 		children.append((updatedCost,shiftLeft,gOfN,hOfN))
 
 	if x-1 >= 0:
@@ -110,10 +102,6 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftUp)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		# print("shift up")
-		# print(shiftUp)
-		# print("H(n): " + str(hOfN))
-		# print("G(n): " + str(gOfN))
 		children.append((updatedCost,shiftUp,gOfN,hOfN))
 
 
@@ -125,10 +113,6 @@ def expand(node, algo):
 		hOfN = calculateHeuristic(algo, shiftRight)
 		gOfN = node[2] + 1
 		updatedCost = gOfN + hOfN
-		# print("shift right")
-		# print(shiftRight)
-		# print("H(n): " + str(hOfN))
-		# print("G(n): " + str(gOfN))
 		children.append((updatedCost,shiftRight,gOfN,hOfN))
 
 	return children
@@ -155,8 +139,8 @@ def generalSearch(puzzle, algo):
 
 	while(True):
 		if len(nodes) == 0: #if nodes is empty, return failure
-			failure = True
-			break 
+			print("FAILURE")
+			return currNode
 
 		if maxQueueLen < len(nodes): maxQueueLen = len(nodes)
 		currNode = heapq.heappop(nodes)
@@ -167,8 +151,7 @@ def generalSearch(puzzle, algo):
 		first_expansion = False
 
 		if currNode[1] == goalState:
-			print("Goal!!")
-			print()
+			print("Goal!! \n")
 			print("The maximum number of nodes in the queue at any one time was " + str(maxQueueLen))
 			print("The depth of the goal node was " + str(currNode[2]))
 			return currNode;
@@ -177,9 +160,6 @@ def generalSearch(puzzle, algo):
 
 		for child in children:
 			heapq.heappush(nodes, child)
-
-	if failure:
-		print("FAILURE")
 
 	return
 

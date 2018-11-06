@@ -1,8 +1,9 @@
 import heapq
 
 def main():
+
 	puzzleType = input("Welcome to Maaz Mohamedy's 8-puzzle solver.\nType '1' to use default puzzle," +
-		" or '2' to create your own. \n")
+		" or '2' to enter your own puzzle. \n")
 
 	if puzzleType == '1':
 		puzzle = pickDefaultArrangement()
@@ -10,14 +11,65 @@ def main():
 	if puzzleType == '2':
 		puzzle = pickCustomArrangement()
 
-	# print(puzzle)
-
-	algo = input("Enter your choice of algorithm"  +
-		"\n\t1. Uniform Cost Search"
-		"\n\t2. A* with the Misplaced Tile heuristic." +
-		"\n\t3. A* with the Manhattan distance heuristic.\n")
+	algo = input("\tEnter your choice of algorithm"  +
+		"\n\t\t1. Uniform Cost Search"
+		"\n\t\t2. A* with the Misplaced Tile heuristic." +
+		"\n\t\t3. A* with the Manhattan distance heuristic.\n\n")
+	print()
 
 	generalSearch(puzzle,algo)
+
+def generalSearch(puzzle, algo):
+	goalState = [[1,2,3],[4,5,6],[7,8,0]]
+	failure = False;
+	maxQueueLen = 0;
+	nodes = []
+	numExpanded = 0
+
+	first = ''
+	for i in range(0,len(puzzle[0])):
+		if  puzzle[0][i] != 0:  first=first+' '+str(puzzle[0][i])
+		else: first=first+' '+'b'
+
+	print("Expanding state " + first, end =" ")
+	printExpansion(puzzle[1:], True, 0, 0)
+
+	first_expansion = True
+
+	#total cost, puzzle, depth, h(n)
+	heapq.heappush(nodes, (0, puzzle, 0,0) )
+
+	while(True):
+		if len(nodes) == 0: #if nodes is empty, return failure
+			print("Failure")
+			return
+
+		#Updating the maximum length of queue
+		if maxQueueLen < len(nodes): maxQueueLen = len(nodes)
+
+		currNode = heapq.heappop(nodes)
+
+		if currNode[1] == goalState:
+			print("\nGoal!! \n")
+			print("To solve this problem the search algorithm expanded a total of " + str(numExpanded) + " nodes.")
+			print("The maximum number of nodes in the queue at any one time was " + str(maxQueueLen) + ".")
+			print("The depth of the goal node was " + str(currNode[2]))
+			return currNode;
+
+		if not first_expansion:
+			printExpansion(currNode[1],False,currNode[3], currNode[2])
+
+		first_expansion = False
+
+		numExpanded = numExpanded + 1
+
+		children = expand(currNode, algo)
+
+		for child in children:
+			heapq.heappush(nodes, child)
+
+	return
+
 
 def misplacedTileHeuristic(puzzle):
 	numMisplaced = 0;
@@ -117,52 +169,6 @@ def expand(node, algo):
 
 	return children
 
-def generalSearch(puzzle, algo):
-	#4^(d+1) - 5
-	goalState = [[1,2,3],[4,5,6],[7,8,0]]
-	failure = False;
-	maxQueueLen = 0;
-	nodes = []
-
-	first = ''
-	for i in range(0,len(puzzle[0])):
-		if  puzzle[0][i] != 0:  first=first+' '+str(puzzle[0][i])
-		else: first=first+' '+'b'
-
-	print("Expanding state " + first, end =" ")
-	printExpansion(puzzle[1:], True, 0, 0)
-
-	first_expansion = True
-
-	#total cost, puzzle, depth, h(n)
-	heapq.heappush(nodes, (0, puzzle, 0,0) )
-
-	while(True):
-		if len(nodes) == 0: #if nodes is empty, return failure
-			print("FAILURE")
-			return currNode
-
-		if maxQueueLen < len(nodes): maxQueueLen = len(nodes)
-		currNode = heapq.heappop(nodes)
-
-		if not first_expansion:
-			printExpansion(currNode[1],False,currNode[3], currNode[2])
-
-		first_expansion = False
-
-		if currNode[1] == goalState:
-			print("Goal!! \n")
-			print("The maximum number of nodes in the queue at any one time was " + str(maxQueueLen))
-			print("The depth of the goal node was " + str(currNode[2]))
-			return currNode;
-
-		children = expand(currNode, algo)
-
-		for child in children:
-			heapq.heappush(nodes, child)
-
-	return
-
 def printExpansion(puzzle,first,hOfN, gOfN):
 	print()
 	row = ''
@@ -179,10 +185,11 @@ def printExpansion(puzzle,first,hOfN, gOfN):
 
 def pickCustomArrangement():
 	puzzle = []
-	print("Enter your puzzle, use a zero to represent the blank")
-	row1 = input("Enter the first row, use space or tabs between numbers\n").split()
-	row2 = input("Enter the second row, use space or tabs between numbers\n").split()
-	row3 = input("Enter the third row, use space or tabs between numbers\n").split()
+	print("\tEnter your puzzle, use a zero to represent the blank")
+	row1 = input("\tEnter the first row, use space or tabs between numbers\t").split()
+	row2 = input("\tEnter the second row, use space or tabs between numbers\t").split()
+	row3 = input("\tEnter the third row, use space or tabs between numbers\t").split()
+	print()
 	
 	for i in range(0, 3):
 		row1[i] = int(row1[i])

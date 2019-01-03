@@ -1,2 +1,2 @@
 # Eight Puzze
-Performing Uniform Cost Search and A* Search.
+Runs Uniform Cost Search and A* Search to solve 8 puzzles.
